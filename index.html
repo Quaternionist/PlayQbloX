@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QBLOX | High-End 3D Spatial Puzzle Game - Steam</title>
+    <!-- Google Fonts: Bebas Neue, Orbitron & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Three.js Library for Background Shader/Particles -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                        bebas: ['"Bebas Neue"', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            bg: '#050508',
+                            card: 'rgba(12, 12, 20, 0.75)',
+                            cyan: '#00f3ff',
+                            magenta: '#ff0055',
+                            purple: '#7000ff',
+                            steam: '#171a21',
+                            steamHover: '#2a475e'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 25px rgba(0, 243, 255, 0.4), 0 0 50px rgba(0, 243, 255, 0.15)',
+                        'neon-magenta': '0 0 25px rgba(255, 0, 85, 0.4), 0 0 50px rgba(255, 0, 85, 0.15)',
+                        'neon-purple': '0 0 30px rgba(112, 0, 255, 0.5)',
+                        'steam-btn': '0 0 20px rgba(103, 193, 245, 0.3)'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050508;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel-interactive {
+            background: rgba(14, 14, 24, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 243, 255, 0.12);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-panel-interactive:hover {
+            border-color: rgba(0, 243, 255, 0.5);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+            transform: translateY(-6px);
+        }
+
+        .steam-gradient-btn {
+            background: linear-gradient(135deg, #171a21 0%, #2a475e 50%, #66c0f4 100%);
+            transition: all 0.3s ease;
+        }
+
+        .steam-gradient-btn:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 0 25px rgba(102, 192, 244, 0.5);
+        }
+
+        .text-glow-cyan {
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.6), 0 0 30px rgba(0, 243, 255, 0.3);
+        }
+
+        .bg-grid-pattern {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050508;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e1e2d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-grid-pattern relative text-slate-200">
+
+    <nav class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-white/10 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo / Title Section with PNG Logo Option -->
+            <a href="#" class="flex items-center gap-3 group">
+                <img src="logo.png" 
+                     alt="QBLOX Logo" 
+                     class="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+                     onerror="this.style.display='none'; document.getElementById('brand-fallback-icon').style.display='flex';" />
+
+                <!-- Fallback Icon (shown automatically if logo.png fails to load) -->
+                <div id="brand-fallback-icon" class="w-10 h-10 bg-gradient-to-tr from-cyber-cyan via-cyber-purple to-cyber-magenta rounded-xl hidden items-center justify-center font-bebas italic text-black text-3xl leading-none shadow-neon-cyan group-hover:scale-105 transition-transform">
+                    Q
+                </div>
+                
+                <span class="font-bebas italic text-3xl tracking-wider text-white leading-none">QBLOX<span class="text-cyber-cyan">.</span></span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-bebas tracking-widest uppercase">
+                <a href="#about" data-i18n="nav_about" class="text-gray-300 hover:text-cyber-cyan transition-colors">ÖZELLİKLER</a>
+                <a href="#trailer" data-i18n="nav_trailer" class="text-gray-300 hover:text-cyber-cyan transition-colors">FRAGMAN</a>
+                <a href="#gallery" data-i18n="nav_gallery" class="text-gray-300 hover:text-cyber-cyan transition-colors">GALERİ</a>
+                <a href="#specs" data-i18n="nav_specs" class="text-gray-300 hover:text-cyber-cyan transition-colors">GEREKSİNİMLER</a>
+                <a href="#steam" data-i18n="nav_steam" class="text-gray-300 hover:text-cyber-cyan transition-colors">STEAM</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- Language Switcher Button -->
+                <button id="langToggleBtn" onclick="toggleLanguage()" class="px-3 py-1.5 rounded-xl glass-panel border border-cyber-cyan/30 text-cyber-cyan font-bebas text-sm tracking-widest hover:border-cyber-cyan transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-globe text-xs"></i>
+                    <span id="langText">TR / EN</span>
+                </button>
+
+                <a href="https://store.steampowered.com/app/4995870/QBLOX/" target="_blank" rel="noopener noreferrer" class="steam-gradient-btn text-white px-5 py-2.5 rounded-xl font-bebas italic text-base tracking-widest uppercase flex items-center gap-2.5 shadow-steam-btn hover:scale-105 transition-all">
+                    <i class="fa-brands fa-steam text-lg not-italic"></i>
+                    <span data-i18n="btn_wishlist">STEAM'DE İSTEK LİSTESİNE EKLE</span>
+                </a>
+                <button id="mobileMenuBtn" class="md:hidden text-2xl text-gray-300 hover:text-white">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden pt-4 pb-2 px-4 border-t border-white/10 mt-3 flex flex-col gap-3 font-bebas text-sm tracking-wider uppercase">
+            <a href="#about" data-i18n="nav_about" class="py-2 text-gray-300 hover:text-cyber-cyan">ÖZELLİKLER</a>
+            <a href="#trailer" data-i18n="nav_trailer" class="py-2 text-gray-300 hover:text-cyber-cyan">FRAGMAN</a>
+            <a href="#gallery" data-i18n="nav_gallery" class="py-2 text-gray-300 hover:text-cyber-cyan">GALERİ</a>
+            <a href="#specs" data-i18n="nav_specs" class="py-2 text-gray-300 hover:text-cyber-cyan">GEREKSİNİMLER</a>
+            <a href="#steam" data-i18n="nav_steam" class="py-2 text-gray-300 hover:text-cyber-cyan">STEAM</a>
+        </div>
+    </nav>
+
+    <section class="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden">
+        <!-- 3D Background Canvas -->
+        <div id="hero3DCanvasContainer" class="absolute inset-0 z-0 opacity-70 pointer-events-none"></div>
+
+        <!-- Atmospheric Glows -->
+        <div class="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-cyber-purple/20 rounded-full filter blur-[150px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-cyber-cyan/15 rounded-full filter blur-[150px] pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
+            
+            <!-- Badges -->
+            <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
+                <span class="px-4 py-1.5 rounded-full glass-panel border border-cyber-cyan/30 text-cyber-cyan text-xs font-bebas tracking-widest uppercase flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-ping"></span>
+                    UNREAL ENGINE 5 & RAY TRACING
+                </span>
+                <span class="px-4 py-1.5 rounded-full glass-panel border border-white/10 text-gray-300 text-xs font-bebas tracking-widest uppercase flex items-center gap-2">
+                    <i class="fa-brands fa-steam text-cyber-cyan"></i>
+                    <span data-i18n="badge_steam_verified">STEAM DECK DOĞRULANDI</span>
+                </span>
+            </div>
+
+            <h1 class="font-bebas italic text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] tracking-wider mb-6 uppercase text-white leading-none">
+                <span data-i18n="hero_title_1">DUVARLARI YIK</span><br>
+                <span data-i18n="hero_title_2" class="not-italic font-bebas bg-gradient-to-r from-cyber-cyan via-purple-400 to-cyber-magenta bg-clip-text text-transparent text-glow-cyan">
+                    EKSENİ DEĞİŞTİR
+                </span>
+            </h1>
+
+            <p data-i18n="hero_description" class="max-w-3xl mx-auto text-lg sm:text-2xl text-gray-300 font-light leading-relaxed mb-10">
+                Hi-End grafikler, akıcı 60+ FPS sinematik kamera açıları ve fotogerçekçi ışıklandırma ile bulmaca türünü baştan tanımlayan agresif bir 3D mekan deneyimi.
+            </p>
+
+            <!-- Hero Video & Call to Action Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto mb-16 text-left">
+                <!-- Gameplay Video Box (Connected to QBLOX_Demo_Gameplay.mp4) -->
+                <div class="lg:col-span-7 glass-panel p-2 rounded-3xl border border-cyber-cyan/40 shadow-neon-cyan/30 overflow-hidden relative group">
+                    <div class="aspect-video rounded-2xl overflow-hidden bg-black/90 relative">
+                        <video id="heroLocalVideo" 
+                               class="w-full h-full object-cover rounded-2xl" 
+                               autoplay loop muted playsinline 
+                               onerror="this.style.display='none'; document.getElementById('heroYoutubeFrame').classList.remove('hidden');">
+                            <source src="QBLOX_Demo_Gameplay.mp4" type="video/mp4">
+                        </video>
+
+                        <!-- YouTube Fallback -->
+                        <iframe id="heroYoutubeFrame" 
+                                class="w-full h-full border-0 absolute inset-0 hidden" 
+                                src="" 
+                                title="QBLOX Hero Gameplay" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+
+                        <!-- Play Overlay Badge -->
+                        <div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg glass-panel text-[11px] font-mono text-cyber-cyan border border-cyber-cyan/30 flex items-center gap-2 pointer-events-none">
+                            <span class="w-2 h-2 rounded-full bg-cyber-magenta animate-pulse"></span>
+                            <span>GAMEPLAY PREVIEW</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call to Action Buttons -->
+                <div class="lg:col-span-5 flex flex-col justify-center gap-4">
+                    <a href="https://store.steampowered.com/app/4995870/QBLOX/" target="_blank" rel="noopener noreferrer" class="w-full steam-gradient-btn text-white px-6 py-4 rounded-2xl font-bebas italic text-xl tracking-widest uppercase flex items-center justify-center gap-3 hover:scale-105 transition-all shadow-steam-btn text-center">
+                        <i class="fa-brands fa-steam text-2xl not-italic"></i>
+                        <span data-i18n="btn_wishlist">STEAM'DE İSTEK LİSTESİNE EKLE</span>
+                    </a>
+                    <a href="#trailer" class="w-full px-6 py-4 rounded-2xl glass-panel text-white font-bebas text-xl tracking-widest uppercase border border-white/20 hover:border-cyber-magenta hover:shadow-neon-magenta hover:scale-105 transition-all flex items-center justify-center gap-3 text-center">
+                        <i class="fa-solid fa-play text-cyber-magenta text-xl"></i> 
+                        <span data-i18n="btn_watch_trailer">4K FRAGMANI İZLE</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Trailer Section (Connected to QBLOX_Demo_Trailer.mp4) -->
+    <section id="trailer" class="py-20 relative z-10 px-6 max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <span data-i18n="trailer_subtitle" class="font-bebas text-lg font-bold tracking-widest text-cyber-magenta uppercase">RESMİ FRAGMAN</span>
+            <h2 data-i18n="trailer_title" class="font-bebas italic text-4xl sm:text-6xl text-white uppercase mt-1 tracking-wide">4K OYNANIŞ VE SİNEMATİK TANITIM</h2>
+        </div>
+
+        <div class="glass-panel p-3 rounded-3xl border border-cyber-cyan/30 shadow-neon-cyan/20 overflow-hidden relative group">
+            <div class="relative aspect-video rounded-2xl overflow-hidden bg-black/90">
+                <video id="mainTrailerVideo" 
+                       class="w-full h-full object-cover rounded-2xl" 
+                       controls 
+                       playsinline
+                       poster="Screen_01.png">
+                    <source src="QBLOX_Demo_Trailer.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-28 relative z-10 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-20">
+            <span data-i18n="feat_subtitle" class="font-bebas text-lg font-bold tracking-widest text-cyber-cyan uppercase">GELECEK NESİL MEKANİKLER</span>
+            <h2 data-i18n="feat_title" class="font-bebas italic text-5xl sm:text-7xl text-white uppercase mt-1 tracking-wide">GÖRSEL VE RİTMİK DEVRİM</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            
+            <div class="glass-panel-interactive p-8 rounded-3xl relative overflow-hidden group">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-cubes-stacked"></i>
+                </div>
+                <h3 data-i18n="f1_title" class="font-bebas italic text-2xl text-white mb-2 tracking-wide">Çift Duvar Eksen Mekaniği</h3>
+                <p data-i18n="f1_desc" class="text-gray-400 text-sm leading-relaxed">
+                    Derinlik algısını zorlayan 3D alan üzerinde blokları sol ve sağ duvarlar arasında anlık eksen geçişleriyle konumlandırın.
+                </p>
+            </div>
+
+            <div class="glass-panel-interactive p-8 rounded-3xl relative overflow-hidden group">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-magenta/10 border border-cyber-magenta/30 flex items-center justify-center text-cyber-magenta text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-camera-rotate"></i>
+                </div>
+                <h3 data-i18n="f2_title" class="font-bebas italic text-2xl text-white mb-2 tracking-wide">Sinematik 60+ FPS Kamera</h3>
+                <p data-i18n="f2_desc" class="text-gray-400 text-sm leading-relaxed">
+                    Aksiyon kamerasından ilham alan dinamik açı kaymaları, her kombonuzda sahneyi sarsan sinematik bir akıcılık sağlar.
+                </p>
+            </div>
+
+            <div class="glass-panel-interactive p-8 rounded-3xl relative overflow-hidden group">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-purple/10 border border-cyber-purple/30 flex items-center justify-center text-cyber-purple text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                </div>
+                <h3 data-i18n="f3_title" class="font-bebas italic text-2xl text-white mb-2 tracking-wide">Ray Traced Işık Efektleri</h3>
+                <p data-i18n="f3_desc" class="text-gray-400 text-sm leading-relaxed">
+                    Neon ışık kırılmaları, hacimsel sis ve yüksek çözünürlüklü blok materyalleri ile AAA grafik standardı.
+                </p>
+            </div>
+
+            <div class="glass-panel-interactive p-8 rounded-3xl relative overflow-hidden group">
+                <div class="w-16 h-16 rounded-2xl bg-yellow-400/10 border border-yellow-400/30 flex items-center justify-center text-yellow-400 text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-compact-disc"></i>
+                </div>
+                <h3 data-i18n="f4_title" class="font-bebas italic text-2xl text-white mb-2 tracking-wide">Darksynth / Synthwave OST</h3>
+                <p data-i18n="f4_desc" class="text-gray-400 text-sm leading-relaxed">
+                    Oynanış temposuyla senkronize olarak evrilen, dünyaca ünlü synthwave sanatçılarından özel müzik albümü.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Gallery Section (Connected to Screen_01.png - Screen_04.png) -->
+    <section id="gallery" class="py-24 relative z-10 px-6 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div>
+                <span data-i18n="gallery_subtitle" class="font-bebas text-lg font-bold tracking-widest text-cyber-magenta uppercase">4K OYUN İÇİ GÖRSELLER</span>
+                <h2 data-i18n="gallery_title" class="font-bebas italic text-4xl sm:text-6xl text-white uppercase mt-1 tracking-wide">EKRAN GÖRÜNTÜLERİ</h2>
+            </div>
+            <p data-i18n="gallery_desc" class="text-gray-400 text-sm max-w-md mt-4 md:mt-0">
+                Unreal Engine 5 ile geliştirilen QBLOX dünyasından yüksek çözünürlüklü sahneleri inceleyin.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- Screen 1 -->
+            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('Screen_01.png')">
+                <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
+                    <img src="Screen_01.png" alt="QBLOX Screenshot 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <i class="fa-solid fa-magnifying-glass-plus text-cyber-cyan text-3xl"></i>
+                    </div>
+                </div>
+                <div class="p-3 font-bebas text-lg text-gray-300 tracking-wider">Dual Wall Spatial Grid</div>
+            </div>
+
+            <!-- Screen 2 -->
+            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('Screen_02.png')">
+                <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
+                    <img src="Screen_02.png" alt="QBLOX Screenshot 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <i class="fa-solid fa-magnifying-glass-plus text-cyber-magenta text-3xl"></i>
+                    </div>
+                </div>
+                <div class="p-3 font-bebas text-lg text-gray-300 tracking-wider">Ray Traced Neon FX</div>
+            </div>
+
+            <!-- Screen 3 -->
+            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('Screen_03.png')">
+                <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
+                    <img src="Screen_03.png" alt="QBLOX Screenshot 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <i class="fa-solid fa-magnifying-glass-plus text-cyber-purple text-3xl"></i>
+                    </div>
+                </div>
+                <div class="p-3 font-bebas text-lg text-gray-300 tracking-wider">Chrono Axis Rotation</div>
+            </div>
+
+            <!-- Screen 4 -->
+            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('Screen_04.png')">
+                <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
+                    <img src="Screen_04.png" alt="QBLOX Screenshot 4" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <i class="fa-solid fa-magnifying-glass-plus text-cyber-cyan text-3xl"></i>
+                    </div>
+                </div>
+                <div class="p-3 font-bebas text-lg text-gray-300 tracking-wider">Cinematic Perspective</div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="specs" class="py-24 relative z-10 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <span data-i18n="specs_subtitle" class="font-bebas text-lg font-bold tracking-widest text-cyber-cyan uppercase">DONANIM GEREKSİNİMLERİ</span>
+            <h2 data-i18n="specs_title" class="font-bebas italic text-4xl sm:text-6xl text-white uppercase mt-1 tracking-wide">SİSTEM GEREKSİNİMLERİ</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Minimum Requirements -->
+            <div class="glass-panel p-8 rounded-3xl border border-white/10 relative">
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                    <h3 data-i18n="min_req_title" class="font-bebas text-2xl text-white tracking-wider">MİNİMUM</h3>
+                    <span class="text-xs font-mono text-gray-400">1080p @ 60 FPS</span>
+                </div>
+                <ul class="space-y-4 text-sm font-mono text-gray-300">
+                    <li class="flex justify-between"><span data-i18n="spec_os" class="text-gray-500">İşletim Sistemi:</span> Windows 10/11 (64-bit)</li>
+                    <li class="flex justify-between"><span data-i18n="spec_cpu" class="text-gray-500">İşlemci:</span> Intel Core i5-8400 / AMD Ryzen 5 2600</li>
+                    <li class="flex justify-between"><span data-i18n="spec_ram" class="text-gray-500">Bellek:</span> 8 GB RAM</li>
+                    <li class="flex justify-between"><span data-i18n="spec_gpu" class="text-gray-500">Ekran Kartı:</span> NVIDIA GeForce GTX 1060 (6GB) / AMD Radeon RX 580</li>
+                    <li class="flex justify-between"><span data-i18n="spec_dx" class="text-gray-500">DirectX:</span> Sürüm 12</li>
+                    <li class="flex justify-between"><span data-i18n="spec_storage_min" class="text-gray-500">Depolama:</span> 15 GB kullanılabilir alan (SSD Önerilir)</li>
+                </ul>
+            </div>
+
+            <!-- Recommended Requirements -->
+            <div class="glass-panel p-8 rounded-3xl border border-cyber-cyan/30 relative shadow-neon-cyan/10">
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                    <h3 data-i18n="rec_req_title" class="font-bebas italic text-2xl text-cyber-cyan tracking-wider">ÖNERİLEN (RTX ON)</h3>
+                    <span class="text-xs font-mono text-cyber-cyan">4K @ 120 FPS</span>
+                </div>
+                <ul class="space-y-4 text-sm font-mono text-gray-300">
+                    <li class="flex justify-between"><span data-i18n="spec_os" class="text-gray-500">İşletim Sistemi:</span> Windows 11 (64-bit)</li>
+                    <li class="flex justify-between"><span data-i18n="spec_cpu" class="text-gray-500">İşlemci:</span> Intel Core i7-12700K / AMD Ryzen 7 5800X</li>
+                    <li class="flex justify-between"><span data-i18n="spec_ram" class="text-gray-500">Bellek:</span> 16 GB RAM</li>
+                    <li class="flex justify-between"><span data-i18n="spec_gpu" class="text-gray-500">Ekran Kartı:</span> NVIDIA GeForce RTX 3070 / AMD Radeon RX 6800 XT</li>
+                    <li class="flex justify-between"><span data-i18n="spec_dx" class="text-gray-500">DirectX:</span> Sürüm 12</li>
+                    <li class="flex justify-between"><span data-i18n="spec_storage_rec" class="text-gray-500">Depolama:</span> 15 GB NVMe SSD</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="steam" class="py-24 relative z-10 px-6 max-w-5xl mx-auto">
+        <div class="glass-panel rounded-3xl p-8 sm:p-14 border border-cyber-cyan/30 relative overflow-hidden shadow-neon-cyan/20">
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-cyber-cyan/10 rounded-full filter blur-3xl pointer-events-none"></div>
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                <div class="space-y-4 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cyber-steam border border-white/10 text-xs font-mono text-gray-300">
+                        <i class="fa-brands fa-steam text-cyber-cyan text-sm"></i> STORE.STEAMPOWERED.COM/app/4995870/QBLOX/
+                    </div>
+                    <h2 data-i18n="steam_cta_title" class="font-bebas italic text-4xl sm:text-6xl text-white uppercase tracking-wide">ÇOK YAKINDA STEAM'DE</h2>
+                    <p data-i18n="steam_cta_desc" class="text-gray-300 text-sm sm:text-base max-w-xl">
+                        İstek listenize ekleyerek çıkış tarihinde anında bildirim alın ve kapalı beta süreçlerine öncelikli katılım hakkı kazanın.
+                    </p>
+                </div>
+
+                <div class="flex flex-col items-center gap-3">
+                    <a href="https://store.steampowered.com/app/4995870/QBLOX/" target="_blank" rel="noopener noreferrer" class="steam-gradient-btn text-white px-8 py-5 rounded-2xl font-bebas italic text-xl tracking-widest uppercase flex items-center justify-center gap-3 shadow-steam-btn hover:scale-105 transition-all text-center w-full sm:w-auto">
+                        <i class="fa-brands fa-steam text-3xl not-italic"></i>
+                        <span data-i18n="btn_wishlist">STEAM'DE İSTEK LİSTESİNE EKLE</span>
+                    </a>
+                    <span data-i18n="release_date" class="text-xs text-gray-400 font-mono">Çıkış Tarihi: Q4 2026</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="relative z-10 border-t border-white/10 bg-black/80 pt-16 pb-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-tr from-cyber-cyan to-cyber-magenta rounded-lg flex items-center justify-center font-bebas italic text-black text-2xl leading-none">Q</div>
+                <span class="font-bebas italic text-2xl tracking-wider text-white">QBLOX</span>
+            </div>
+
+            <div class="flex gap-6 text-xl text-gray-400">
+                <a href="https://store.steampowered.com/app/4995870/QBLOX/" target="_blank" class="hover:text-cyber-cyan transition-colors"><i class="fa-brands fa-steam"></i></a>
+                <a href="#" class="hover:text-cyber-cyan transition-colors"><i class="fa-brands fa-discord"></i></a>
+                <a href="#" class="hover:text-cyber-cyan transition-colors"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" class="hover:text-cyber-cyan transition-colors"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+
+        <div data-i18n="footer_rights" class="max-w-7xl mx-auto border-t border-white/5 pt-6 text-center text-xs text-gray-500 font-mono">
+            © 2026 QBLOX Game Studio. Steam ve Steam logosu Valve Corporation'ın tescilli markalarıdır.
+        </div>
+    </footer>
+
+    <!-- Gallery Image Modal -->
+    <div id="galleryModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 hidden" onclick="closeGalleryModal()">
+        <div class="relative max-w-5xl w-full">
+            <img id="galleryModalImg" src="" alt="Full Resolution Screenshot" class="w-full h-auto rounded-2xl border border-white/20">
+        </div>
+    </div>
+
+    <script>
+        // --- MULTI-LANGUAGE (i18n) DICTIONARY ---
+        const translations = {
+            tr: {
+                nav_about: "ÖZELLİKLER",
+                nav_trailer: "FRAGMAN",
+                nav_gallery: "GALERİ",
+                nav_specs: "GEREKSİNİMLER",
+                nav_steam: "STEAM",
+                btn_wishlist: "STEAM'DE İSTEK LİSTESİNE EKLE",
+                badge_steam_verified: "STEAM DECK DOĞRULANDI",
+                hero_title_1: "DUVARLARI YIK",
+                hero_title_2: "EKSENİ DEĞİŞTİR",
+                hero_description: "Hi-End grafikler, akıcı 60+ FPS sinematik kamera açıları ve fotogerçekçi ışıklandırma ile bulmaca türünü baştan tanımlayan agresif bir 3D mekan deneyimi.",
+                btn_watch_trailer: "4K FRAGMANI İZLE",
+                trailer_subtitle: "RESMİ FRAGMAN",
+                trailer_title: "4K OYNANIŞ VE SİNEMATİK TANITIM",
+                feat_subtitle: "GELECEK NESİL MEKANİKLER",
+                feat_title: "GÖRSEL VE RİTMİK DEVRİM",
+                f1_title: "Çift Duvar Eksen Mekaniği",
+                f1_desc: "Derinlik algısını zorlayan 3D alan üzerinde blokları sol ve sağ duvarlar arasında anlık eksen geçişleriyle konumlandırın.",
+                f2_title: "Sinematik 60+ FPS Kamera",
+                f2_desc: "Aksiyon kamerasından ilham alan dinamik açı kaymaları, her kombonuzda sahneyi sarsan sinematik bir akıcılık sağlar.",
+                f3_title: "Ray Traced Işık Efektleri",
+                f3_desc: "Neon ışık kırılmaları, hacimsel sis ve yüksek çözünürlüklü blok materyalleri ile AAA grafik standardı.",
+                f4_title: "Darksynth / Synthwave OST",
+                f4_desc: "Oynanış temposuyla senkronize olarak evrilen, dünyaca ünlü synthwave sanatçılarından özel müzik albümü.",
+                gallery_subtitle: "4K OYUN İÇİ GÖRSELLER",
+                gallery_title: "EKRAN GÖRÜNTÜLERİ",
+                gallery_desc: "Unreal Engine 5 ile geliştirilen QBLOX dünyasından yüksek çözünürlüklü sahneleri inceleyin.",
+                specs_subtitle: "DONANIM GEREKSİNİMLERİ",
+                specs_title: "SİSTEM GEREKSİNİMLERİ",
+                min_req_title: "MİNİMUM",
+                rec_req_title: "ÖNERİLEN (RTX ON)",
+                spec_os: "İşletim Sistemi:",
+                spec_cpu: "İşlemci:",
+                spec_ram: "Bellek:",
+                spec_gpu: "Ekran Kartı:",
+                spec_dx: "DirectX:",
+                spec_storage_min: "Depolama:",
+                spec_storage_rec: "Depolama:",
+                steam_cta_title: "ÇOK YAKINDA STEAM'DE",
+                steam_cta_desc: "İstek listenize ekleyerek çıkış tarihinde anında bildirim alın ve kapalı beta süreçlerine öncelikli katılım hakkı kazanın.",
+                release_date: "Çıkış Tarihi: Q4 2026",
+                footer_rights: "© 2026 QBLOX Game Studio. Steam ve Steam logosu Valve Corporation'ın tescilli markalarıdır."
+            },
+            en: {
+                nav_about: "FEATURES",
+                nav_trailer: "TRAILER",
+                nav_gallery: "GALLERY",
+                nav_specs: "SYSTEM SPECS",
+                nav_steam: "STEAM",
+                btn_wishlist: "ADD TO STEAM WISHLIST",
+                badge_steam_verified: "STEAM DECK VERIFIED",
+                hero_title_1: "BREAK THE WALLS",
+                hero_title_2: "SHIFT THE AXIS",
+                hero_description: "An aggressive 3D spatial puzzle experience redefining the genre with Hi-End graphics, fluid 60+ FPS cinematic camera angles, and photorealistic lighting.",
+                btn_watch_trailer: "WATCH 4K TRAILER",
+                trailer_subtitle: "OFFICIAL TRAILER",
+                trailer_title: "4K GAMEPLAY & CINEMATIC SHOWCASE",
+                feat_subtitle: "NEXT-GEN MECHANICS",
+                feat_title: "VISUAL & RHYTHMIC REVOLUTION",
+                f1_title: "Dual Wall Axis Mechanics",
+                f1_desc: "Position 3D blocks between dual spatial walls with instantaneous axis shifts challenging spatial depth perception.",
+                f2_title: "Cinematic 60+ FPS Camera",
+                f2_desc: "Action-cam inspired dynamic angle shifts delivering screen-shaking cinematic fluidity on every line clearance.",
+                f3_title: "Ray Traced Lighting FX",
+                f3_desc: "AAA graphics benchmark featuring volumetric fog, neon refraction, and hyper-detailed physical materials.",
+                f4_title: "Darksynth / Synthwave OST",
+                f4_desc: "Original pulsating electronic soundtrack dynamically evolving with gameplay rhythm and combo velocity.",
+                gallery_subtitle: "4K IN-GAME SCREENSHOTS",
+                gallery_title: "GALLERY",
+                gallery_desc: "Explore high-resolution spatial scenes crafted in Unreal Engine 5 with real-time ray tracing.",
+                specs_subtitle: "HARDWARE SPECS",
+                specs_title: "SYSTEM REQUIREMENTS",
+                min_req_title: "MINIMUM",
+                rec_req_title: "RECOMMENDED (RTX ON)",
+                spec_os: "OS:",
+                spec_cpu: "Processor:",
+                spec_ram: "Memory:",
+                spec_gpu: "Graphics:",
+                spec_dx: "DirectX:",
+                spec_storage_min: "Storage:",
+                spec_storage_rec: "Storage:",
+                steam_cta_title: "COMING SOON TO STEAM",
+                steam_cta_desc: "Add to your wishlist to get notified instantly on release and gain priority access to closed beta phases.",
+                release_date: "Release Date: Q4 2026",
+                footer_rights: "© 2026 QBLOX Game Studio. Steam and Steam logo are registered trademarks of Valve Corporation."
+            }
+        };
+
+        let currentLang = localStorage.getItem('qblox_lang') || 'tr';
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('qblox_lang', lang);
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+
+            const langTextElem = document.getElementById('langText');
+            if (langTextElem) {
+                langTextElem.textContent = lang === 'tr' ? 'TR / EN' : 'EN / TR';
+            }
+        }
+
+        function toggleLanguage() {
+            const nextLang = currentLang === 'tr' ? 'en' : 'tr';
+            applyLanguage(nextLang);
+        }
+
+        // --- THREE.JS HIGH-END AMBIENT SCENE ---
+        let scene, camera, renderer, particles;
+
+        function initBackground3D() {
+            const container = document.getElementById('hero3DCanvasContainer');
+            if (!container) return;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            const geometry = new THREE.BufferGeometry();
+            const count = 700;
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+
+            for (let i = 0; i < count * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 80;
+                positions[i + 1] = (Math.random() - 0.5) * 80;
+                positions[i + 2] = (Math.random() - 0.5) * 80;
+
+                if (Math.random() > 0.5) {
+                    colors[i] = 0.0; colors[i + 1] = 0.95; colors[i + 2] = 1.0;
+                } else {
+                    colors[i] = 1.0; colors[i + 1] = 0.0; colors[i + 2] = 0.33;
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.6,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.7
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            animateBackground();
+        }
+
+        function animateBackground() {
+            requestAnimationFrame(animateBackground);
+            if (particles) {
+                particles.rotation.y += 0.0008;
+                particles.rotation.x += 0.0004;
+            }
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            if (!renderer) return;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initBackground3D();
+            applyLanguage(currentLang);
+        });
+
+        function openGalleryModal(url) {
+            document.getElementById('galleryModalImg').src = url;
+            document.getElementById('galleryModal').classList.remove('hidden');
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('galleryModal').classList.add('hidden');
+        }
+
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
