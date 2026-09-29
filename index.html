@@ -126,14 +126,14 @@
 
     <nav class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-white/10 px-6 py-4">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <!-- Brand Logo / Title Section with PNG Logo Option -->
+            <!-- External Logo URL -->
             <a href="#" class="flex items-center gap-3 group">
-                <img src="logo.png" 
+                <img src="https://YOUR_EXTERNAL_HOST.com/assets/logo.png" 
                      alt="QBLOX Logo" 
                      class="h-10 w-auto object-contain transition-transform group-hover:scale-105"
                      onerror="this.style.display='none'; document.getElementById('brand-fallback-icon').style.display='flex';" />
 
-                <!-- Fallback Icon (shown automatically if logo.png fails to load) -->
+                <!-- Fallback Icon -->
                 <div id="brand-fallback-icon" class="w-10 h-10 bg-gradient-to-tr from-cyber-cyan via-cyber-purple to-cyber-magenta rounded-xl hidden items-center justify-center font-bebas italic text-black text-3xl leading-none shadow-neon-cyan group-hover:scale-105 transition-transform">
                     Q
                 </div>
@@ -150,7 +150,6 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <!-- Language Switcher Button -->
                 <button id="langToggleBtn" onclick="toggleLanguage()" class="px-3 py-1.5 rounded-xl glass-panel border border-cyber-cyan/30 text-cyber-cyan font-bebas text-sm tracking-widest hover:border-cyber-cyan transition-all flex items-center gap-1.5">
                     <i class="fa-solid fa-globe text-xs"></i>
                     <span id="langText">TR / EN</span>
@@ -166,7 +165,6 @@
             </div>
         </div>
 
-        <!-- Mobile Menu -->
         <div id="mobileMenu" class="hidden md:hidden pt-4 pb-2 px-4 border-t border-white/10 mt-3 flex flex-col gap-3 font-bebas text-sm tracking-wider uppercase">
             <a href="#about" data-i18n="nav_about" class="py-2 text-gray-300 hover:text-cyber-cyan">ÖZELLİKLER</a>
             <a href="#trailer" data-i18n="nav_trailer" class="py-2 text-gray-300 hover:text-cyber-cyan">FRAGMAN</a>
@@ -177,16 +175,13 @@
     </nav>
 
     <section class="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden">
-        <!-- 3D Background Canvas -->
         <div id="hero3DCanvasContainer" class="absolute inset-0 z-0 opacity-70 pointer-events-none"></div>
 
-        <!-- Atmospheric Glows -->
         <div class="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-cyber-purple/20 rounded-full filter blur-[150px] pointer-events-none"></div>
         <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-cyber-cyan/15 rounded-full filter blur-[150px] pointer-events-none"></div>
 
         <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
             
-            <!-- Badges -->
             <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
                 <span class="px-4 py-1.5 rounded-full glass-panel border border-cyber-cyan/30 text-cyber-cyan text-xs font-bebas tracking-widest uppercase flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-ping"></span>
@@ -209,27 +204,17 @@
                 Hi-End grafikler, akıcı 60+ FPS sinematik kamera açıları ve fotogerçekçi ışıklandırma ile bulmaca türünü baştan tanımlayan agresif bir 3D mekan deneyimi.
             </p>
 
-            <!-- Hero Video & Call to Action Container -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto mb-16 text-left">
-                <!-- Gameplay Video Box (Connected to QBLOX_Demo_Gameplay.mp4) -->
+                <!-- External Gameplay Video Embed (YouTube/Vimeo) -->
                 <div class="lg:col-span-7 glass-panel p-2 rounded-3xl border border-cyber-cyan/40 shadow-neon-cyan/30 overflow-hidden relative group">
                     <div class="aspect-video rounded-2xl overflow-hidden bg-black/90 relative">
-                        <video id="heroLocalVideo" 
-                               class="w-full h-full object-cover rounded-2xl" 
-                               autoplay loop muted playsinline 
-                               onerror="this.style.display='none'; document.getElementById('heroYoutubeFrame').classList.remove('hidden');">
-                            <source src="QBLOX_Demo_Gameplay.mp4" type="video/mp4">
-                        </video>
+                        <iframe class="w-full h-full border-0 rounded-2xl" 
+        src="https://www.youtube.com/embed/U9T18uM71Nk?&autoplay=1&mute=1&loop=1&playlist=U9T18uM71Nk&origin=https://playqblox.com" 
+        title="QBLOX Hero Gameplay" 
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        allowfullscreen></iframe>
 
-                        <!-- YouTube Fallback -->
-                        <iframe id="heroYoutubeFrame" 
-                                class="w-full h-full border-0 absolute inset-0 hidden" 
-                                src="" 
-                                title="QBLOX Hero Gameplay" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen></iframe>
-
-                        <!-- Play Overlay Badge -->
                         <div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg glass-panel text-[11px] font-mono text-cyber-cyan border border-cyber-cyan/30 flex items-center gap-2 pointer-events-none">
                             <span class="w-2 h-2 rounded-full bg-cyber-magenta animate-pulse"></span>
                             <span>GAMEPLAY PREVIEW</span>
@@ -237,7 +222,6 @@
                     </div>
                 </div>
 
-                <!-- Call to Action Buttons -->
                 <div class="lg:col-span-5 flex flex-col justify-center gap-4">
                     <a href="https://store.steampowered.com/app/4995870/QBLOX/" target="_blank" rel="noopener noreferrer" class="w-full steam-gradient-btn text-white px-6 py-4 rounded-2xl font-bebas italic text-xl tracking-widest uppercase flex items-center justify-center gap-3 hover:scale-105 transition-all shadow-steam-btn text-center">
                         <i class="fa-brands fa-steam text-2xl not-italic"></i>
@@ -253,7 +237,7 @@
         </div>
     </section>
 
-    <!-- Trailer Section (Connected to QBLOX_Demo_Trailer.mp4) -->
+    <!-- External Main Trailer Embed Section -->
     <section id="trailer" class="py-20 relative z-10 px-6 max-w-6xl mx-auto">
         <div class="text-center mb-12">
             <span data-i18n="trailer_subtitle" class="font-bebas text-lg font-bold tracking-widest text-cyber-magenta uppercase">RESMİ FRAGMAN</span>
@@ -262,14 +246,11 @@
 
         <div class="glass-panel p-3 rounded-3xl border border-cyber-cyan/30 shadow-neon-cyan/20 overflow-hidden relative group">
             <div class="relative aspect-video rounded-2xl overflow-hidden bg-black/90">
-                <video id="mainTrailerVideo" 
-                       class="w-full h-full object-cover rounded-2xl" 
-                       controls 
-                       playsinline
-                       poster="Screen_01.png">
-                    <source src="QBLOX_Demo_Trailer.mp4" type="video/mp4">
-                    Tarayıcınız video etiketini desteklemiyor.
-                </video>
+                <iframe class="w-full h-full border-0 rounded-2xl" 
+                        src="https://www.youtube.com/embed/U9T18uM71Nk" 
+                        title="QBLOX Official Trailer" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen></iframe>
             </div>
         </div>
     </section>
@@ -281,7 +262,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            
             <div class="glass-panel-interactive p-8 rounded-3xl relative overflow-hidden group">
                 <div class="w-16 h-16 rounded-2xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan text-3xl mb-6 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-cubes-stacked"></i>
@@ -321,11 +301,10 @@
                     Oynanış temposuyla senkronize olarak evrilen, dünyaca ünlü synthwave sanatçılarından özel müzik albümü.
                 </p>
             </div>
-
         </div>
     </section>
 
-    <!-- Gallery Section (Connected to Screen_01.png - Screen_04.png) -->
+    <!-- Gallery Section (External Screenshots URLs) -->
     <section id="gallery" class="py-24 relative z-10 px-6 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
@@ -340,9 +319,9 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             
             <!-- Screen 1 -->
-            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('Screen_01.png')">
+            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('https://i.imgur.com/JACie9o.png')">
                 <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
-                    <img src="Screen_01.png" alt="QBLOX Screenshot 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="https://i.imgur.com/JACie9o.png" alt="QBLOX Screenshot 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <i class="fa-solid fa-magnifying-glass-plus text-cyber-cyan text-3xl"></i>
                     </div>
@@ -351,9 +330,9 @@
             </div>
 
             <!-- Screen 2 -->
-            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('Screen_02.png')">
+            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('https://i.imgur.com/hr8nh2g.png')">
                 <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
-                    <img src="Screen_02.png" alt="QBLOX Screenshot 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="https://i.imgur.com/hr8nh2g.png" alt="QBLOX Screenshot 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <i class="fa-solid fa-magnifying-glass-plus text-cyber-magenta text-3xl"></i>
                     </div>
@@ -362,9 +341,9 @@
             </div>
 
             <!-- Screen 3 -->
-            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('Screen_03.png')">
+            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('https://i.imgur.com/jyMZCwV.png')">
                 <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
-                    <img src="Screen_03.png" alt="QBLOX Screenshot 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="https://i.imgur.com/jyMZCwV.png" alt="QBLOX Screenshot 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <i class="fa-solid fa-magnifying-glass-plus text-cyber-purple text-3xl"></i>
                     </div>
@@ -373,9 +352,9 @@
             </div>
 
             <!-- Screen 4 -->
-            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('Screen_04.png')">
+            <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('https://i.imgur.com/K99aZzK.png')">
                 <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
-                    <img src="Screen_04.png" alt="QBLOX Screenshot 4" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="https://i.imgur.com/K99aZzK.png" alt="QBLOX Screenshot 4" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <i class="fa-solid fa-magnifying-glass-plus text-cyber-cyan text-3xl"></i>
                     </div>
@@ -393,8 +372,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            <!-- Minimum Requirements -->
             <div class="glass-panel p-8 rounded-3xl border border-white/10 relative">
                 <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                     <h3 data-i18n="min_req_title" class="font-bebas text-2xl text-white tracking-wider">MİNİMUM</h3>
@@ -410,7 +387,6 @@
                 </ul>
             </div>
 
-            <!-- Recommended Requirements -->
             <div class="glass-panel p-8 rounded-3xl border border-cyber-cyan/30 relative shadow-neon-cyan/10">
                 <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                     <h3 data-i18n="rec_req_title" class="font-bebas italic text-2xl text-cyber-cyan tracking-wider">ÖNERİLEN (RTX ON)</h3>
@@ -425,7 +401,6 @@
                     <li class="flex justify-between"><span data-i18n="spec_storage_rec" class="text-gray-500">Depolama:</span> 15 GB NVMe SSD</li>
                 </ul>
             </div>
-
         </div>
     </section>
 
@@ -483,7 +458,6 @@
     </div>
 
     <script>
-        // --- MULTI-LANGUAGE (i18n) DICTIONARY ---
         const translations = {
             tr: {
                 nav_about: "ÖZELLİKLER",
@@ -598,7 +572,6 @@
             applyLanguage(nextLang);
         }
 
-        // --- THREE.JS HIGH-END AMBIENT SCENE ---
         let scene, camera, renderer, particles;
 
         function initBackground3D() {
