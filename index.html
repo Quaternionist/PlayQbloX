@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>QBLOX | High-End 3D Spatial Puzzle Game - Steam</title>
     <!-- Google Fonts: Bebas Neue, Orbitron & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -126,14 +127,12 @@
 
     <nav class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-white/10 px-6 py-4">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <!-- External Logo URL -->
             <a href="#" class="flex items-center gap-3 group">
                 <img src="https://YOUR_EXTERNAL_HOST.com/assets/logo.png" 
                      alt="QBLOX Logo" 
                      class="h-10 w-auto object-contain transition-transform group-hover:scale-105"
                      onerror="this.style.display='none'; document.getElementById('brand-fallback-icon').style.display='flex';" />
 
-                <!-- Fallback Icon -->
                 <div id="brand-fallback-icon" class="w-10 h-10 bg-gradient-to-tr from-cyber-cyan via-cyber-purple to-cyber-magenta rounded-xl hidden items-center justify-center font-bebas italic text-black text-3xl leading-none shadow-neon-cyan group-hover:scale-105 transition-transform">
                     Q
                 </div>
@@ -174,6 +173,7 @@
         </div>
     </nav>
 
+    <!-- HERO SECTION -->
     <section class="relative min-h-screen flex items-center justify-center pt-28 pb-20 overflow-hidden">
         <div id="hero3DCanvasContainer" class="absolute inset-0 z-0 opacity-70 pointer-events-none"></div>
 
@@ -205,15 +205,16 @@
             </p>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto mb-16 text-left">
-                <!-- External Gameplay Video Embed (YouTube/Vimeo) -->
+                <!-- HERO YOUTUBE VIDEO EMBED -->
                 <div class="lg:col-span-7 glass-panel p-2 rounded-3xl border border-cyber-cyan/40 shadow-neon-cyan/30 overflow-hidden relative group">
                     <div class="aspect-video rounded-2xl overflow-hidden bg-black/90 relative">
-                        <iframe class="w-full h-full border-0 rounded-2xl" 
-        src="https://www.youtube.com/embed/U9T18uM71Nk?&autoplay=1&mute=1&loop=1&playlist=U9T18uM71Nk&origin=https://playqblox.com" 
-        title="QBLOX Hero Gameplay" 
-        referrerpolicy="strict-origin-when-cross-origin"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-        allowfullscreen></iframe>
+                        <iframe id="heroYoutubeFrame"
+                                class="w-full h-full border-0 rounded-2xl" 
+                                src="https://www.youtube.com/embed/U9T18uM71Nk?autoplay=1&mute=1&loop=1&playlist=U9T18uM71Nk&origin=https://playqblox.com" 
+                                title="QBLOX Hero Gameplay" 
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allowfullscreen></iframe>
 
                         <div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg glass-panel text-[11px] font-mono text-cyber-cyan border border-cyber-cyan/30 flex items-center gap-2 pointer-events-none">
                             <span class="w-2 h-2 rounded-full bg-cyber-magenta animate-pulse"></span>
@@ -237,7 +238,7 @@
         </div>
     </section>
 
-    <!-- External Main Trailer Embed Section -->
+    <!-- TRAILER SECTION -->
     <section id="trailer" class="py-20 relative z-10 px-6 max-w-6xl mx-auto">
         <div class="text-center mb-12">
             <span data-i18n="trailer_subtitle" class="font-bebas text-lg font-bold tracking-widest text-cyber-magenta uppercase">RESMİ FRAGMAN</span>
@@ -246,15 +247,19 @@
 
         <div class="glass-panel p-3 rounded-3xl border border-cyber-cyan/30 shadow-neon-cyan/20 overflow-hidden relative group">
             <div class="relative aspect-video rounded-2xl overflow-hidden bg-black/90">
-                <iframe class="w-full h-full border-0 rounded-2xl" 
-                        src="https://www.youtube.com/embed/U9T18uM71Nk" 
+                <!-- MAIN TRAILER YOUTUBE VIDEO EMBED -->
+                <iframe id="mainTrailerFrame"
+                        class="w-full h-full border-0 rounded-2xl" 
+                        src="https://www.youtube.com/embed/U9T18uM71Nk?origin=https://playqblox.com" 
                         title="QBLOX Official Trailer" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                         allowfullscreen></iframe>
             </div>
         </div>
     </section>
 
+    <!-- FEATURES SECTION -->
     <section id="about" class="py-28 relative z-10 px-6 max-w-7xl mx-auto">
         <div class="text-center mb-20">
             <span data-i18n="feat_subtitle" class="font-bebas text-lg font-bold tracking-widest text-cyber-cyan uppercase">GELECEK NESİL MEKANİKLER</span>
@@ -304,7 +309,7 @@
         </div>
     </section>
 
-    <!-- Gallery Section (External Screenshots URLs) -->
+    <!-- GALLERY SECTION -->
     <section id="gallery" class="py-24 relative z-10 px-6 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
@@ -317,8 +322,6 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            <!-- Screen 1 -->
             <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('https://i.imgur.com/JACie9o.png')">
                 <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
                     <img src="https://i.imgur.com/JACie9o.png" alt="QBLOX Screenshot 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -329,7 +332,6 @@
                 <div class="p-3 font-bebas text-lg text-gray-300 tracking-wider">Dual Wall Spatial Grid</div>
             </div>
 
-            <!-- Screen 2 -->
             <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('https://i.imgur.com/hr8nh2g.png')">
                 <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
                     <img src="https://i.imgur.com/hr8nh2g.png" alt="QBLOX Screenshot 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -340,7 +342,6 @@
                 <div class="p-3 font-bebas text-lg text-gray-300 tracking-wider">Ray Traced Neon FX</div>
             </div>
 
-            <!-- Screen 3 -->
             <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('https://i.imgur.com/jyMZCwV.png')">
                 <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
                     <img src="https://i.imgur.com/jyMZCwV.png" alt="QBLOX Screenshot 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -351,7 +352,6 @@
                 <div class="p-3 font-bebas text-lg text-gray-300 tracking-wider">Chrono Axis Rotation</div>
             </div>
 
-            <!-- Screen 4 -->
             <div class="glass-panel p-2.5 rounded-2xl group cursor-pointer overflow-hidden relative" onclick="openGalleryModal('https://i.imgur.com/K99aZzK.png')">
                 <div class="aspect-video rounded-xl overflow-hidden relative bg-black/50">
                     <img src="https://i.imgur.com/K99aZzK.png" alt="QBLOX Screenshot 4" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -361,10 +361,10 @@
                 </div>
                 <div class="p-3 font-bebas text-lg text-gray-300 tracking-wider">Cinematic Perspective</div>
             </div>
-
         </div>
     </section>
 
+    <!-- SPECS SECTION -->
     <section id="specs" class="py-24 relative z-10 px-6 max-w-7xl mx-auto">
         <div class="text-center mb-16">
             <span data-i18n="specs_subtitle" class="font-bebas text-lg font-bold tracking-widest text-cyber-cyan uppercase">DONANIM GEREKSİNİMLERİ</span>
@@ -404,6 +404,7 @@
         </div>
     </section>
 
+    <!-- STEAM CTA SECTION -->
     <section id="steam" class="py-24 relative z-10 px-6 max-w-5xl mx-auto">
         <div class="glass-panel rounded-3xl p-8 sm:p-14 border border-cyber-cyan/30 relative overflow-hidden shadow-neon-cyan/20">
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-cyber-cyan/10 rounded-full filter blur-3xl pointer-events-none"></div>
@@ -430,6 +431,7 @@
         </div>
     </section>
 
+    <!-- FOOTER -->
     <footer class="relative z-10 border-t border-white/10 bg-black/80 pt-16 pb-12 px-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
             <div class="flex items-center gap-3">
@@ -457,6 +459,7 @@
         </div>
     </div>
 
+    <!-- SCRIPTS -->
     <script>
         const translations = {
             tr: {
